@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-dark: var(--bg-dark);
+  --color-light: var(--bg-light);
+  --font-sans: 'Inter', sans-serif;
+}
+
+:root {
+  /* Default (Dark) */
+  --primary: #6366f1;
+  /* Indigo 500 */
+  --secondary: #ec4899;
+  /* Pink 500 */
+  --bg-dark: #0f172a;
+  /* Slate 900 */
+  --bg-light: #f8fafc;
+  /* Slate 50 */
+  --text-main: rgba(255, 255, 255, 0.87);
+
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme='cyberpunk'] {
+  --primary: #facc15;
+  /* Yellow 400 */
+  --secondary: #06b6d4;
+  /* Cyan 500 */
+  --bg-dark: #11001c;
+  /* Deep Purple/Black */
+  --bg-light: #2e1065;
+}
+
+[data-theme='oled'] {
+  --primary: #ffffff;
+  /* White */
+  --secondary: #333333;
+  /* Dark Gray */
+  --bg-dark: #000000;
+  /* Pure Black */
+  --bg-light: #111111;
+}
+
+[data-theme='light'] {
+  --primary: #4f46e5;
+  /* Indigo 600 */
+  --secondary: #db2777;
+  /* Pink 600 */
+  --bg-dark: #f1f5f9;
+  /* Slate 100 */
+  --bg-light: #ffffff;
+  --text-main: #0f172a;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

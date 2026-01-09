@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AtNDance</string>
+    <string name="title_activity_main">AtNDance</string>
+    <string name="package_name">com.atndance.app</string>
+    <string name="custom_url_scheme">com.atndance.app</string>
+</resources>
