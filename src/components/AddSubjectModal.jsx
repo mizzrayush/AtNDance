@@ -16,6 +16,8 @@ const COLORS = [
 export default function AddSubjectModal({ isOpen, onClose, onAdd }) {
     const [name, setName] = useState('')
     const [professor, setProfessor] = useState('')
+    const [semesterTotal, setSemesterTotal] = useState('')
+    const [targetAttendance, setTargetAttendance] = useState('75')
     const [selectedColor, setSelectedColor] = useState(COLORS[5])
 
     const handleSubmit = (e) => {
@@ -25,12 +27,16 @@ export default function AddSubjectModal({ isOpen, onClose, onAdd }) {
         onAdd({
             name,
             professor,
+            semesterTotal,
+            targetAttendance,
             color: selectedColor
         })
 
         // Reset form
         setName('')
         setProfessor('')
+        setSemesterTotal('')
+        setTargetAttendance('75')
         setSelectedColor(COLORS[5])
         onClose()
     }
@@ -50,7 +56,7 @@ export default function AddSubjectModal({ isOpen, onClose, onAdd }) {
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed inset-x-4 top-[20%] max-w-md mx-auto bg-[#1e293b] rounded-2xl p-6 z-50 shadow-2xl border border-white/10"
+                        className="fixed inset-x-4 top-[15%] max-w-md mx-auto bg-[#1e293b] rounded-2xl p-6 z-50 shadow-2xl border border-white/10 max-h-[80vh] overflow-y-auto"
                     >
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-xl font-bold text-white">Add New Subject</h2>
@@ -81,6 +87,29 @@ export default function AddSubjectModal({ isOpen, onClose, onAdd }) {
                                     placeholder="e.g. Dr. Smith"
                                     className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
                                 />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm text-gray-400 mb-2">Total Classes</label>
+                                    <input
+                                        type="number"
+                                        value={semesterTotal}
+                                        onChange={(e) => setSemesterTotal(e.target.value)}
+                                        placeholder="e.g. 40"
+                                        className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-gray-400 mb-2">Target %</label>
+                                    <input
+                                        type="number"
+                                        value={targetAttendance}
+                                        onChange={(e) => setTargetAttendance(e.target.value)}
+                                        placeholder="75"
+                                        className="w-full bg-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
+                                    />
+                                </div>
                             </div>
 
                             <div>

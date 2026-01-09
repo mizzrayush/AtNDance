@@ -19,6 +19,7 @@ export default function Simulator() {
 
     const currentPct = currentTotal === 0 ? 0 : Math.round((currentAttended / currentTotal) * 100)
     const simulatedPct = simulatedTotal === 0 ? 0 : Math.round((simulatedAttended / simulatedTotal) * 100)
+    const target = selectedSubject?.targetAttendance || 75
 
     const addSimulation = (type) => {
         setSimulationDays([...simulationDays, type])
@@ -52,8 +53,8 @@ export default function Simulator() {
                                 resetSimulation()
                             }}
                             className={`flex-shrink-0 px-4 py-2 rounded-xl border transition-all ${selectedSubjectId === subject.id
-                                    ? 'bg-primary text-white border-primary'
-                                    : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
+                                ? 'bg-primary text-white border-primary'
+                                : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
                                 }`}
                         >
                             {subject.name}
@@ -67,7 +68,7 @@ export default function Simulator() {
                 <div className="flex justify-between items-center mb-8">
                     <div className="text-center">
                         <p className="text-sm text-gray-400 mb-1">Current</p>
-                        <p className={`text-3xl font-bold ${currentPct >= 75 ? 'text-green-400' : 'text-red-400'}`}>
+                        <p className={`text-3xl font-bold ${currentPct >= target ? 'text-green-400' : 'text-red-400'}`}>
                             {currentPct}%
                         </p>
                     </div>
@@ -77,7 +78,7 @@ export default function Simulator() {
                         <motion.p
                             key={simulatedPct}
                             initial={{ scale: 1.5, color: '#fff' }}
-                            animate={{ scale: 1, color: simulatedPct >= 75 ? '#4ade80' : '#f87171' }}
+                            animate={{ scale: 1, color: simulatedPct >= target ? '#4ade80' : '#f87171' }}
                             className="text-3xl font-bold"
                         >
                             {simulatedPct}%

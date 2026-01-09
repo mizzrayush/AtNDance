@@ -8,8 +8,9 @@ export default function AttendanceCard({ subject, onMark }) {
         : Math.round((subject.attendance.attended / subject.attendance.total) * 100)
 
     const getStatusColor = (pct) => {
-        if (pct >= 75) return 'text-green-400'
-        if (pct >= 60) return 'text-yellow-400'
+        const target = subject.targetAttendance || 75
+        if (pct >= target) return 'text-green-400'
+        if (pct >= target - 15) return 'text-yellow-400'
         return 'text-red-400'
     }
 

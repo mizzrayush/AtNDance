@@ -6,31 +6,63 @@ import ProfessorStats from '../components/ProfessorStats'
 export default function Insights() {
     const { subjects } = useTimetable()
 
-    const calculateStatus = (attended, total) => {
-        if (total === 0) return { status: 'neutral', message: 'No classes yet' }
+    const calculateStatus = (subject) => {
+        const { attended, total, cancelled } = subject.attendance
+        const semesterTotal = subject.semesterTotal
+        const absent = total - attended
+        const target = (subject.targetAttendance || 75) / 100
 
-        const percentage = attended / total
-        const target = 0.75
+        if (semesterTotal) {
+            // Fixed Semester Logic
+            const conducted = total + (cancelled || 0)
+            const remaining = semesterTotal - conducted
+            const maxBunks = Math.floor(semesterTotal * (1 - target))
+            const bunksUsed = absent
+            const safeToBunk = maxBunks - bunksUsed
 
-        if (percentage >= target) {
-            // Safe to bunk calculation
-            // A / (T + X) >= 0.75  =>  X <= (A/0.75) - T
-            const safeToBunk = Math.floor((attended / target) - total)
-            return {
-                status: 'good',
-                canBunk: safeToBunk,
-                message: safeToBunk > 0
-                    ? `You can safely skip ${safeToBunk} more classes!`
-                    : 'You are on track, but cannot skip any classes yet.'
+            if (remaining < 0) {
+                return {
+                    status: 'neutral',
+                    message: 'Semester limit exceeded. Update total classes?'
+                }
+            }
+
+            if (safeToBunk > 0) {
+                return {
+                    status: 'good',
+                    canBunk: safeToBunk,
+                    remaining,
+                    message: `You can skip ${safeToBunk} more classes. (${remaining} left)`
+                }
+            } else {
+                return {
+                    status: 'bad',
+                    remaining,
+                    message: `No more skips allowed! (${remaining} classes left)`
+                }
             }
         } else {
-            // Need to attend calculation
-            // (A + Y) / (T + Y) >= 0.75  =>  Y >= (0.75T - A) / 0.25
-            const needToAttend = Math.ceil(((target * total) - attended) / (1 - target))
-            return {
-                status: 'bad',
-                needToAttend,
-                message: `Attend next ${needToAttend} classes to reach 75%.`
+            // Dynamic Logic (Old)
+            if (total === 0) return { status: 'neutral', message: 'No classes yet' }
+
+            const percentage = attended / total
+
+            if (percentage >= target) {
+                const safeToBunk = Math.floor((attended / target) - total)
+                return {
+                    status: 'good',
+                    canBunk: safeToBunk,
+                    message: safeToBunk > 0
+                        ? `You can safely skip ${safeToBunk} more classes!`
+                        : 'You are on track, but cannot skip any classes yet.'
+                }
+            } else {
+                const needToAttend = Math.ceil(((target * total) - attended) / (1 - target))
+                return {
+                    status: 'bad',
+                    needToAttend,
+                    message: `Attend next ${needToAttend} classes to reach ${target * 100}%.`
+                }
             }
         }
     }
@@ -50,7 +82,8 @@ export default function Insights() {
                     subjects.map(subject => {
                         const { attended, total } = subject.attendance
                         const percentage = total === 0 ? 0 : Math.round((attended / total) * 100)
-                        const analysis = calculateStatus(attended, total)
+                        const analysis = calculateStatus(subject)
+                        const target = subject.targetAttendance || 75
 
                         return (
                             <motion.div
@@ -65,8 +98,15 @@ export default function Insights() {
 
                                 <div className="pl-4">
                                     <div className="flex justify-between items-start mb-2">
-                                        <h3 className="font-bold text-lg text-white">{subject.name}</h3>
-                                        <span className={`text-xl font-bold ${percentage >= 75 ? 'text-green-400' : 'text-red-400'}`}>
+                                        <div>
+                                            <h3 className="font-bold text-lg text-white">{subject.name}</h3>
+                                            {analysis.remaining !== undefined && (
+                                                <p className="text-xs text-gray-400">
+                                                    {analysis.remaining} classes left in sem
+                                                </p>
+                                            )}
+                                        </div>
+                                        <span className={`text-xl font-bold ${percentage >= target ? 'text-green-400' : 'text-red-400'}`}>
                                             {percentage}%
                                         </span>
                                     </div>

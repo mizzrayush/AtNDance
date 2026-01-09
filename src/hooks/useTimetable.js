@@ -37,7 +37,9 @@ export function useTimetable() {
     const addSubject = (subject) => {
         const newSubject = {
             id: crypto.randomUUID(),
-            attendance: { total: 0, attended: 0 },
+            attendance: { total: 0, attended: 0, cancelled: 0 },
+            semesterTotal: subject.semesterTotal ? parseInt(subject.semesterTotal) : null,
+            targetAttendance: subject.targetAttendance ? parseInt(subject.targetAttendance) : 75,
             ...subject
         }
         const newSubjects = [...subjects, newSubject]
@@ -71,14 +73,17 @@ export function useTimetable() {
         const newSubjects = subjects.map(subject => {
             if (subject.id === subjectId) {
                 const newStats = { ...subject.attendance }
+                // Ensure cancelled exists for legacy data
+                if (newStats.cancelled === undefined) newStats.cancelled = 0
 
                 if (status === 'present') {
                     newStats.total += 1
                     newStats.attended += 1
                 } else if (status === 'absent') {
                     newStats.total += 1
+                } else if (status === 'cancelled') {
+                    newStats.cancelled += 1
                 }
-                // status === 'cancelled' does nothing to stats
 
                 return { ...subject, attendance: newStats }
             }
